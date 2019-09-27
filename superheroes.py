@@ -40,8 +40,6 @@ class Team:
     #adding a hero to the self.heroes list
     def add_hero(self, hero):
         self.heroes.append(hero)
-        pass
-
 
     #Loop over heroes and print their names
     def view_all_heroes(self):
@@ -54,18 +52,54 @@ class Team:
             if name in hero.name:
                 name_index = int(self.heroes.index(hero))
                 self.heroes.pop(name_index)
+            else:
+                return 0
 
+    def attack(self, other_team):
+        #Randomly select a living hero from each team to fight
+        #until one team wins
+        rm_hero = random.choice(self.heroes)
+        rm_opp = random.choice(other_team.heroes)
+
+
+        for hero in self.heroes:            #inspired by Snekek
+            for opponent in other_team.heroes:
+                while rm_hero.is_alive() and rm_opp.is_alive():
+                    rm_hero.fight(rm_opp)
+
+        #Might need to change some things on page 5
+
+        if hero.is_alive():
+                print(f'Team {self.name} is victorious!!!')
         else:
-            return 0
+            print(f'Team {other_team.name} is victorious!!!')
 
+    def revive_heroes(self, health=100):
+        #Revives all heroes health to original value
+        for hero in self.heroes:
+            hero.current_health = hero.starting_health
+
+    def stats(self):
+        # TODO: This method should print the ratio of kills/deaths for each
+        # member of the team to the screen.
+        # This data must be output to the console.
+        # Hint: Use the information stored in each hero.
+
+        for hero in heroes:
+            print (f'{hero.name}:'(hero.kills/hero.deaths))
+
+        pass
 # Hero object
 class Hero:
-    def __init__(self, name, starting_health = 100,):
+    def __init__(self, name, starting_health = 100):
         self.abilities = []
         self.armors = []
         self.name = name
         self.current_health = starting_health
         self.starting_health = starting_health
+        self.kills = 0
+        self.deaths = 0
+
 # add an ability to hero
     def add_ability(self, ability):
          #self.ability = Ability
@@ -80,16 +114,18 @@ class Hero:
 #heros armor
     def add_armor(self,armor):
         self.armors.append(Armor(armor.name, armor.max_block))
+#adding heros armor
+        
 #hero defend
-    def defend(self, damage_amt):
+    def defend(self):
         total_blocked = 0
         for armor in self.armors:
             total_blocked += armor.block()
 
         return total_blocked
 #hero is hit
-    def take_damage(self,damage):
-        damage = damage - self.defend(damage)
+    def take_damage(self, damage):
+        damage = damage - self.defend()
         self.current_health -= damage
 
 #checks if you are still alive
@@ -98,23 +134,42 @@ class Hero:
             return True
         else:
             return False
+
 #The fight
     def fight(self, opponent):
-        #while loop to run through undeturmened game (spelling is whatever)
+        #while loop to run through undeturmened game
         #if opponent and self have no ability "Its a Draw"
         while self.is_alive() and opponent.is_alive():
             if opponent.abilities and self.abilities == []:
-                print("It's a draw")
+                print("Evenly Matched! ")
                 break
 
             self.take_damage(opponent.attack())
             opponent.take_damage(self.attack())
             #if self health is less then or equal to 0 you lose. vice versa
-            if self.current_health <= 0:
-                print(f'{opponent.name} Wins!!')
-            elif opponent.current_health <= 0:
-                print(f'{self.name} Wins!!!')
+            #if self dies opponets adds 1 to add_kill and self adds to self.add_death
+            if self.current_health <= 0 and self.abilities == []:
+                opponent.add_kill(1)
+                self.add_death(1)
+                print(f'{opponent.name} won!')
 
+
+            elif opponent.current_health <= 0 and opponent.abilities == []:
+                # elif opponent dies add 1 to self.add_kill
+                # and one to opponent.add_death
+                self.add_kill(1)
+                opponent.add_death(1)
+                print(f'{self.name} won!')
+
+
+    def add_kill(self,num_kills):
+            #this should add the number of kills to self.kills
+            # if game ends and self.current_health is not 0 you self.kill
+            self.kills += num_kills
+
+    def add_death(self, num_deaths):
+        #this should add numbers of deaths to self.death
+            self.deaths += num_deaths
 
 
 
