@@ -1,5 +1,6 @@
 #superhero.py
 import random
+from random import choice
 
 class Ability:
     def __init__ (self, name, attack_strength):
@@ -18,8 +19,7 @@ class Ability:
 class Weapon(Ability):
     #weapon attack method
     def attack(self):
-        attack = random.randint(self.max_damage//2, self.max_damage)
-        return attack
+        return random.randint(self.max_damage//2, self.max_damage)
 
 #armor object
 class Armor:
@@ -68,7 +68,6 @@ class Team:
                     first_team.append(hero)
 
             for opponent in other_team.heroes:
-
                 if opponent.is_alive():
                     second_team.append(opponent)
 
@@ -149,17 +148,17 @@ class Arena:
     def create_ability(self):
         name = input("Name your ability: ")
         max_damage = input("Set the maximum damage for your ability: ")
-        return Ability(name, max_damage) #might need to make max_damage an int
+        return Ability(name, int(max_damage)) #might need to make max_damage an int
 
     def create_weapon(self):
         name = input("Name your a weapon: ")
         max_damage = input("Set the maximum damage for your weapon: ")
-        return Weapon(name, max_damage)
+        return Weapon(name, int(max_damage))
 
     def create_armor(self):
         name = input("Name your Armor: ")
         max_block = input("Set the maximum strength of your armor: ")
-        return Armor(name, max_block)
+        return Armor(name, int(max_block))
 
     def create_hero(self):
         name = input("Enter your heroes name: ")
@@ -218,7 +217,7 @@ class Arena:
         for i in range(0, int(number_of_heroes2)):
             hero = self.create_hero()
             print(hero.name)
-            self.team_one.add_hero(hero)
+            self.team_two.add_hero(hero)
 
     def team_battle(self):
 
@@ -317,7 +316,7 @@ class Hero:
     def fight(self, opponent):
         #while loop to run through undeturmened game
         #if opponent and self have no ability "Its a Draw"
-        if opponent.abilities and self.abilities > 0:
+        if len(opponent.abilities) and len(self.abilities) > 0:
             # print("Evenly Matched! ")
             # break
             while self.is_alive() and opponent.is_alive():
@@ -355,11 +354,34 @@ class Hero:
 
 #prints
 if __name__ == "__main__":
+    game_is_running = True
+
+    # Instantiate Game Arena
     arena = Arena()
+
+    #Build Teams
     arena.build_team_one()
     arena.build_team_two()
-    arena.team_battle()
-    arena.show_stats()
+
+    while game_is_running:
+
+        arena.team_battle()
+        arena.show_stats()
+        play_again = input("Play Again? Y or N: ")
+
+        #Check for Player Input
+        if play_again.lower() == "n":
+            game_is_running = False
+
+        else:
+            #Revive heroes to play again
+            arena.team_one.revive_heroes()
+            arena.team_two.revive_heroes()
+    # arena = Arena()
+    # arena.build_team_one()
+    # arena.build_team_two()
+    # arena.team_battle()
+    # arena.show_stats()
     #hero1 = Hero("Wonder Woman")
     #hero2 = Hero("Dumbledore")               #creat heroes
     #ability1 = Ability("Super Speed", 300)
