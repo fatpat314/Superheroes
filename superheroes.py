@@ -157,23 +157,43 @@ class Arena:
             self.team_one.add_hero(hero)
 
     def team_battle(self):
-        print(self.team_one.name)
-        print(self.team_one.heroes[0])
-        print(self.team_one.heroes[0].name)
-        self.team_one.attack(self.team_two)
+
+        self.winning_team = self.build_team_one.attack(self.build_team_two)
+        #print(self.team_one.name)
+        #print(self.team_one.heroes[0])
+        #print(self.team_one.heroes[0].name)
+        #self.team_one.attack(self.team_two)
+
+
 
     def show_stats(self):
-        print("Team ones kill/death ratio is: {}".format(self.team_one.stats()))
-        print("Team twos kill/death ratio is: {}".format(self.team_two.stats()))
+
+        print("The winners are: " + self.winning_team)
+
+        self.build_team_one.stats()
+        self.build_team_two.stats()
+
+        if self.winning_team == self.build_team_one.name:
+            for hero in self.build_team_one.heroes:
+                if hero.status == "Alive":
+                    print("Surviving Heroes: " + hero.name)
+        elif self.winning_team == self.build_team_two.name:
+            for hero in self.build_team_two.heroes:
+                if hero.status == "Alive":
+                    print("Surviving Heroes: " + hero.name)
+
+
+        #print("Team ones kill/death ratio is: {}".format(self.team_one.stats()))
+        #print("Team twos kill/death ratio is: {}".format(self.team_two.stats()))
 
         #winner: if opponent hero list is = 0 ....?
-        if Team.team_two(self.heroes) == 0 and Team.team_one(self.heroes) > 0:
-            print("{} WINS!!!".format(self.team_one_name))
-        else:
-            pass
-
-        if Team.team_one(self.heroes) == 0 and Team.team_two(self.heroes) > 0:
-            print("{}WINS!!!".format(self.team_two_name))
+        #if Team.team_two(self.heroes) == 0 and Team.team_one(self.heroes) > 0:
+            #print("{} WINS!!!".format(self.team_one_name))
+        #else:
+            #pass
+#
+        #if Team.team_one(self.heroes) == 0 and Team.team_two(self.heroes) > 0:
+            #print("{}WINS!!!".format(self.team_two_name))
 
 
 # Hero object
