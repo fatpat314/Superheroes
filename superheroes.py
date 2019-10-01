@@ -86,7 +86,9 @@ class Team:
         # Hint: Use the information stored in each hero.
 
         for hero in self.heroes:
-            print (f'{Hero.name}:'(Hero.kills/Hero.deaths))
+            #print (f'{hero.name}:'(hero.kills/hero.deaths))
+
+            print("Hero: " + hero.name + " | Kills: " + str(hero.kills) + " | Deaths: " + str(hero.deaths))
 
 class Arena:
     def __init__(self):
@@ -161,8 +163,8 @@ class Arena:
         self.team_one.attack(self.team_two)
 
     def show_stats(self):
-        print("Team ones kill/death ratio is: {}".format(self.team_one.name(stats)))
-        print("Team twos kill/death ratio is: {}".format(self.team_two.name(stats)))
+        print("Team ones kill/death ratio is: {}".format(self.team_one.stats()))
+        print("Team twos kill/death ratio is: {}".format(self.team_two.stats()))
 
         #winner: if opponent hero list is = 0 ....?
         if Team.team_two(self.heroes) == 0 and Team.team_one(self.heroes) > 0:
