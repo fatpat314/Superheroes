@@ -58,21 +58,72 @@ class Team:
     def attack(self, other_team):
         #Randomly select a living hero from each team to fight
         #until one team wins
-        rm_hero = random.shuffle(self.heroes)
-        rm_opp = random.shuffle(other_team.heroes)
+        fighting = True
+        while fighting:
+            first_team = []
+            second_team = []
 
+            for hero in self.heroes:
+                if hero.is_alive():
+                    first_team.append(hero)
 
-        for hero in self.heroes:
             for opponent in other_team.heroes:
-                while self.rm_hero.is_alive() and self.rm_opp.is_alive():
-                    self.rm_hero.fight(self.rm_opp)
 
-        #Might need to change some things on page 5
+                if opponent.is_alive():
+                    second_team.append(opponent)
 
-        if hero.is_alive():
-                print(f'Team {self.name} is victorious!!!')
-        else:
-            print(f'Team {other_team.name} is victorious!!!')
+            if len(first_team) == 0:
+                if len(second_team) == 0:
+                    print("Draw")
+                    fighting = False
+                elif len(second_team) > 0:
+                    print(f"{other_team.name} is the winner")
+
+                    fighting = False
+
+            elif len(second_team) == 0:
+                if len(first_team) == 0:
+                    print("Draw")
+                    fighting = False
+                elif len(first_team) > 0:
+                    print(f"{self.name} is the winner")
+
+                    fighting = False
+            else:
+                hero1 = random.choice(first_team)
+                opponent1 = random.choice(second_team)
+
+                hero1.fight(opponent1)
+
+                if hero1.is_alive() == False:
+                    first_team.remove(hero1)
+                else:
+                    second_team.remove(opponent1)
+
+
+    def surviving_heroes(self):
+        for hero in self.heroes:
+            if hero.is_alive():
+                print(hero.name)
+
+
+            #attacking = True
+            #while attacking == True:
+                #rm_hero = random.shuffle(self.heroes)
+                #rm_opp = random.shuffle(other_team.heroes)
+
+                #for hero in self.heroes:
+                    #for opponent in other_team.heroes:
+                        #while self.rm_hero.is_alive() and self.rm_opp.is_alive():
+                            #self.rm_hero.fight(self.rm_opp)
+                        #attacking = False
+
+            #Might need to change some things on page 5
+
+            #if hero.is_alive():
+                #print(f'Team {self.name} is victorious!!!')
+            #else:
+                #print(f'Team {other_team.name} is victorious!!!')
 
     def revive_heroes(self, health=100):
         #Revives all heroes health to original value
@@ -115,6 +166,11 @@ class Arena:
         hero = Hero(name)
 
         armor = input("Would you like armor? (Y/N)")
+        while armor != "y" and armor != "n":
+
+            print("invalid input")
+            armor = input("Would you like armor? (Y/N)")
+            pass
         if armor == "y":
             armor = self.create_armor()
             hero.add_armor(armor)
@@ -122,6 +178,11 @@ class Arena:
              pass
 
         weapon = input("Would you like a weapon? (Y/N)")
+        while weapon != "y" and weapon != "n":
+
+            print("Invalid input")
+            weapon = input("Would you like a weapon? (Y/N)")
+
         if weapon == "y":
             weapon = self.create_weapon()
             hero.add_weapon(weapon)
@@ -129,6 +190,9 @@ class Arena:
             pass
 
         ability = input("Would you like an ability? (Y/N)")
+        while ability != "y" and ability != "n":
+            print("Invalid input")
+
         if ability == "y":
             ability = self.create_ability()
             hero.add_ability(ability)
@@ -158,7 +222,7 @@ class Arena:
 
     def team_battle(self):
 
-        self.winning_team = self.build_team_one.attack(self.build_team_two)
+        self.team_one.attack(self.team_two)
         #print(self.team_one.name)
         #print(self.team_one.heroes[0])
         #print(self.team_one.heroes[0].name)
@@ -168,19 +232,20 @@ class Arena:
 
     def show_stats(self):
 
-        print("The winners are: " + self.winning_team)
+        self.team_one.stats()
+        self.team_two.stats()
 
-        self.build_team_one.stats()
-        self.build_team_two.stats()
+        # if self.winning_team == self.team_one.name:
+        #     for hero in self.team_one.heroes:
+        #         if hero.status == "Alive":
+        #             print("Surviving Heroes: " + hero.name)
+        # elif self.winning_team == self.team_two.name:
+        #     for hero in self.team_two.heroes:
+        #         if hero.status == "Alive":
+        #             print("Surviving Heroes: " + hero.name)
 
-        if self.winning_team == self.build_team_one.name:
-            for hero in self.build_team_one.heroes:
-                if hero.status == "Alive":
-                    print("Surviving Heroes: " + hero.name)
-        elif self.winning_team == self.build_team_two.name:
-            for hero in self.build_team_two.heroes:
-                if hero.status == "Alive":
-                    print("Surviving Heroes: " + hero.name)
+        self.team_one.surviving_heroes()
+        self.team_two.surviving_heroes()
 
 
         #print("Team ones kill/death ratio is: {}".format(self.team_one.stats()))
@@ -252,13 +317,12 @@ class Hero:
     def fight(self, opponent):
         #while loop to run through undeturmened game
         #if opponent and self have no ability "Its a Draw"
-        while self.is_alive() and opponent.is_alive():
-            if opponent.abilities and self.abilities == []:
-                print("Evenly Matched! ")
-                break
-
-            self.take_damage(opponent.attack())
-            opponent.take_damage(self.attack())
+        if opponent.abilities and self.abilities > 0:
+            # print("Evenly Matched! ")
+            # break
+            while self.is_alive() and opponent.is_alive():
+                self.take_damage(opponent.attack())
+                opponent.take_damage(self.attack())
 
             #if self health is less then or equal to 0 you lose. vice versa
             #if self dies opponets adds 1 to add_kill and self adds to self.add_death
