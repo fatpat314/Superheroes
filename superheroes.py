@@ -50,54 +50,46 @@ class Team:
     def remove_hero(self, name):
         for hero in self.heroes:
             if name in hero.name:
-                name_index = int(self.heroes.index(hero))
-                self.heroes.pop(name_index)
-            else:
-                return 0
+                self.heroes.remove(hero)
+                return 1
+        return 0
 
     def attack(self, other_team):
         #Randomly select a living hero from each team to fight
         #until one team wins
+        first_team = []
+        second_team = []
+
+        for hero in self.heroes:
+            if hero.is_alive():
+                first_team.append(hero)
+        for opponent in other_team.heroes:
+            if opponent.is_alive():
+                second_team.append(opponent)
+
         fighting = True
         while fighting:
-            first_team = []
-            second_team = []
+            hero1 = random.choice(first_team)
+            opponent1 = random.choice(second_team)
+            hero1.fight(opponent1)
 
-            for hero in self.heroes:
-                if hero.is_alive():
-                    first_team.append(hero)
-
-            for opponent in other_team.heroes:
-                if opponent.is_alive():
-                    second_team.append(opponent)
-
-            if len(first_team) == 0:
-                if len(second_team) == 0:
-                    print("Draw")
-                    fighting = False
-                elif len(second_team) > 0:
-                    print(f"{other_team.name} is the winner")
-
-                    fighting = False
-
-            elif len(second_team) == 0:
-                if len(first_team) == 0:
-                    print("Draw")
-                    fighting = False
-                elif len(first_team) > 0:
-                    print(f"{self.name} is the winner")
-
-                    fighting = False
+            if hero1.is_alive() == False:
+                first_team.remove(hero1)
             else:
-                hero1 = random.choice(first_team)
-                opponent1 = random.choice(second_team)
+                second_team.remove(opponent1)
 
-                hero1.fight(opponent1)
+            if len(first_team) == 0 or len(second_team) == 0:
+                fighting = False
 
-                if hero1.is_alive() == False:
-                    first_team.remove(hero1)
-                else:
-                    second_team.remove(opponent1)
+
+            if len(second_team) > 0:
+                print(f"{other_team.name} is the winner")
+
+            if len(first_team) > 0:
+                print(f"{self.name} is the winner")
+
+            if len(second_team) and len(first_team) == 0:
+                print("Draw!")
 
 
     def surviving_heroes(self):
@@ -105,24 +97,6 @@ class Team:
             if hero.is_alive():
                 print(hero.name)
 
-
-            #attacking = True
-            #while attacking == True:
-                #rm_hero = random.shuffle(self.heroes)
-                #rm_opp = random.shuffle(other_team.heroes)
-
-                #for hero in self.heroes:
-                    #for opponent in other_team.heroes:
-                        #while self.rm_hero.is_alive() and self.rm_opp.is_alive():
-                            #self.rm_hero.fight(self.rm_opp)
-                        #attacking = False
-
-            #Might need to change some things on page 5
-
-            #if hero.is_alive():
-                #print(f'Team {self.name} is victorious!!!')
-            #else:
-                #print(f'Team {other_team.name} is victorious!!!')
 
     def revive_heroes(self, health=100):
         #Revives all heroes health to original value
@@ -166,44 +140,34 @@ class Arena:
 
         armor = input("Would you like armor? (Y/N)")
         while armor != "y" and armor != "n":
-
             print("invalid input")
             armor = input("Would you like armor? (Y/N)")
-            pass
         if armor == "y":
             armor = self.create_armor()
             hero.add_armor(armor)
-        else:
-             pass
 
         weapon = input("Would you like a weapon? (Y/N)")
         while weapon != "y" and weapon != "n":
-
             print("Invalid input")
             weapon = input("Would you like a weapon? (Y/N)")
-
         if weapon == "y":
             weapon = self.create_weapon()
             hero.add_weapon(weapon)
-        else:
-            pass
 
         ability = input("Would you like an ability? (Y/N)")
         while ability != "y" and ability != "n":
             print("Invalid input")
-
         if ability == "y":
             ability = self.create_ability()
             hero.add_ability(ability)
-        else:
-            pass
+
         return hero
         #Arena.team_one.append(hero)
 
     def build_team_one(self):
         team_one_name = input("Name your first team: ")
         number_of_heroes = int(input("Enter a number for the amount of heroes you would like in your first team: "))
-        for i in range(0, int(number_of_heroes)):
+        for i in range(0, number_of_heroes):
             #print(i)
             hero = self.create_hero()
             print(hero.name)
@@ -213,52 +177,25 @@ class Arena:
 
     def build_team_two(self):
         team_two_name = input("Name your second team: ")
-        number_of_heroes2 = input("Enter a number for the amount of heroes you would like in your second team: ")
-        for i in range(0, int(number_of_heroes2)):
+        number_of_heroes2 = int(input("Enter a number for the amount of heroes you would like in your second team: "))
+        for i in range(0, number_of_heroes2):
             hero = self.create_hero()
             print(hero.name)
             self.team_two.add_hero(hero)
 
     def team_battle(self):
-
         self.team_one.attack(self.team_two)
-        #print(self.team_one.name)
-        #print(self.team_one.heroes[0])
-        #print(self.team_one.heroes[0].name)
-        #self.team_one.attack(self.team_two)
+
 
 
 
     def show_stats(self):
-
         self.team_one.stats()
         self.team_two.stats()
 
-        # if self.winning_team == self.team_one.name:
-        #     for hero in self.team_one.heroes:
-        #         if hero.status == "Alive":
-        #             print("Surviving Heroes: " + hero.name)
-        # elif self.winning_team == self.team_two.name:
-        #     for hero in self.team_two.heroes:
-        #         if hero.status == "Alive":
-        #             print("Surviving Heroes: " + hero.name)
 
         self.team_one.surviving_heroes()
         self.team_two.surviving_heroes()
-
-
-        #print("Team ones kill/death ratio is: {}".format(self.team_one.stats()))
-        #print("Team twos kill/death ratio is: {}".format(self.team_two.stats()))
-
-        #winner: if opponent hero list is = 0 ....?
-        #if Team.team_two(self.heroes) == 0 and Team.team_one(self.heroes) > 0:
-            #print("{} WINS!!!".format(self.team_one_name))
-        #else:
-            #pass
-#
-        #if Team.team_one(self.heroes) == 0 and Team.team_two(self.heroes) > 0:
-            #print("{}WINS!!!".format(self.team_two_name))
-
 
 # Hero object
 class Hero:
@@ -337,6 +274,7 @@ class Hero:
                 self.add_kill(1)
                 opponent.add_death(1)
                 print(f'{self.name} won!')
+
 
 
     def add_kill(self,num_kills):
