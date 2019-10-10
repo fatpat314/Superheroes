@@ -184,7 +184,9 @@ class Arena:
             self.team_two.add_hero(hero)
 
     def team_battle(self):
-        self.team_one.attack(self.team_two)
+        for hero in self.team_one.heroes:
+            random_opponent_number = random.randrange(0,len(self.team_two.heroes))
+            hero.fight(self.team_two.heroes[random_opponent_number])
 
 
 
@@ -251,9 +253,11 @@ class Hero:
 
 #The fight
     def fight(self, opponent):
+
         #while loop to run through undeturmened game
         #if opponent and self have no ability "Its a Draw"
         if len(opponent.abilities) and len(self.abilities) > 0:
+
             # print("Evenly Matched! ")
             # break
             while self.is_alive() and opponent.is_alive():
@@ -263,6 +267,7 @@ class Hero:
             #if self health is less then or equal to 0 you lose. vice versa
             #if self dies opponets adds 1 to add_kill and self adds to self.add_death
             if self.current_health <= 0 or self.abilities == []:
+                print("HEY THIS IS HERE NOW")
                 opponent.add_kill(1)
                 self.add_death(1)
                 print(f'{opponent.name} won!')
@@ -271,6 +276,7 @@ class Hero:
             elif opponent.current_health <= 0 or opponent.abilities == []:
                 # elif opponent dies add 1 to self.add_kill
                 # and one to opponent.add_death
+                print("HEY")
                 self.add_kill(1)
                 opponent.add_death(1)
                 print(f'{self.name} won!')
